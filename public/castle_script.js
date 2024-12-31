@@ -15,7 +15,7 @@ var engine = null;
     var delayCreateScene = function () {
     var scene = new BABYLON.Scene(engine);
     const camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, BABYLON.Vector3.Zero(), scene);
-    camera.setPosition(new BABYLON.Vector3(60, 0, 10));
+    camera.setPosition(new BABYLON.Vector3(70, 0, 0));
     camera.attachControl(canvas, true);
     const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.9;
@@ -40,6 +40,23 @@ var engine = null;
     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     skybox.material = skyboxMaterial;
+
+    // Event Listener für Mausbewegungen
+    canvas.addEventListener("pointerdown", handlePointerEvent);
+    canvas.addEventListener("pointermove", handlePointerEvent);
+    canvas.addEventListener("pointerup", handlePointerEvent);
+
+    function handlePointerEvent(evt) {
+        var pickResult = scene.pick(scene.pointerX, scene.pointerY);
+
+        if (pickResult.hit) {
+            debu("Treffer: " + pickResult.pickedMesh.name);
+            // Hier kannst du weitere Aktionen ausführen, wenn der Zeiger auf ein Hindernis trifft
+        }
+    }
+
+
+
     return scene;
 
     }//ende deled scene

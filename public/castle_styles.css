@@ -10,8 +10,8 @@
     display: none; /* Standardmäßig ausgeblendet */
     height: 50vh;
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 55px;
+    right: 5px;
     background-color: rgba(128, 128, 128, 0.5); /* Grau und halbtransparent */
     z-index:1;
 }

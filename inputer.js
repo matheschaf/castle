@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Babylon.js mit Achsenpfeilen</title>
+    <title>Babylon.js mit Touchscreen-Unterstützung</title>
     <style>
         canvas {
             width: 100%;
@@ -18,26 +18,27 @@
         var scene = new BABYLON.Scene(engine);
 
         // Kamera und Licht erstellen
-        var camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 100, BABYLON.Vector3.Zero(), scene);
+        var camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 50, BABYLON.Vector3.Zero(), scene);
         camera.attachControl(canvas, true);
         var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
 
-        // Achsenpfeile anzeigen
-        var axesViewer = new BABYLON.AxesViewer(scene, 10);
+        // Hindernis erstellen (z.B. eine Box)
+        var box = BABYLON.MeshBuilder.CreateBox("box", {size: 5}, scene);
+        box.position = new BABYLON.Vector3(0, 2.5, 0);
 
-        // Flachen Boden erstellen und nach unten verschieben
-        var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 100, height: 100}, scene);
-        var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-        groundMaterial.diffuseTexture = new BABYLON.Texture("path/to/your/grass_texture.png", scene);
-        ground.material = groundMaterial;
-        ground.position.y = -5;  // Verschiebe den Boden nach unten
+        // Event Listener für Touch- und Zeigegeräte-Eingaben
+        canvas.addEventListener("pointerdown", handlePointerEvent);
+        canvas.addEventListener("pointermove", handlePointerEvent);
+        canvas.addEventListener("pointerup", handlePointerEvent);
 
-        // Hintergrundbild hinzufügen
-        var backgroundMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", scene);
-        backgroundMaterial.diffuseTexture = new BABYLON.Texture("path/to/your/himmel.jpg", scene);
-        var backgroundPlane = BABYLON.MeshBuilder.CreatePlane("backgroundPlane", {width: 1000, height: 800}, scene);
-        backgroundPlane.material = backgroundMaterial;
-        backgroundPlane.position.z = -50;
+        function handlePointerEvent(evt) {
+            var pickResult = scene.pick(scene.pointerX, scene.pointerY);
+
+            if (pickResult.hit) {
+                console.log("Treffer: " + pickResult.pickedMesh.name);
+                // Hier kannst du weitere Aktionen ausführen, wenn der Zeiger auf ein Hindernis trifft
+            }
+        }
 
         engine.runRenderLoop(function () {
             scene.render();
