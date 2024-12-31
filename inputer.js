@@ -33,6 +33,9 @@
                 var x = i - textureResolution / 2;
                 var y = j - textureResolution / 2;
                 var heightValue = Math.sin(x * 0.1) * Math.sin(y * 0.1) * 128 + 128;  // Beispiel für Hügel
+                if (isNaN(heightValue)) {
+                    heightValue = 128;  // Setze Standardwert, wenn `NaN` gefunden wird
+                }
                 var grayValue = heightValue.toFixed(0);
                 context.fillStyle = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
                 context.fillRect(i, j, 1, 1);

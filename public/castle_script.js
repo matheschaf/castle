@@ -20,41 +20,25 @@ var engine = null;
     const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.9;
     const box = BABYLON.MeshBuilder.CreateBox("box", { size: 2 }, scene);
-    // Erzeuge eine dynamische Textur für die Heightmap
-    var textureResolution = 512;
-    var dynamicTexture = new BABYLON.DynamicTexture("dynamicTexture", textureResolution, scene, false);
-    var context = dynamicTexture.getContext();
 
-    // Zeichne die Heightmap
-    for (var i = 0; i < textureResolution; i++) {
-        for (var j = 0; j < textureResolution; j++) {
-            var heightValue = Math.sin(i / 20) * Math.cos(j / 20) * 128 + 128;  // Beispiel für Höhenwerte
-            var grayValue = heightValue.toFixed(0);
-            context.fillStyle = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
-            context.fillRect(i, j, 1, 1);
-        }
-    }
-    dynamicTexture.update();
-    // Boden erstellen
-    var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 100, height: 100}, scene);
-
-    // Textur hinzufügen
-    var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    groundMaterial.diffuseTexture = new BABYLON.Texture("grasstex.png", scene);
+    //create ground
+    var ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "textures/heightMap_orig.png", 500, 500, 500, 0, 20, scene, false);
+    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+    groundMaterial.diffuseTexture = new BABYLON.Texture("textures/ground.jpg", scene);
+    groundMaterial.diffuseTexture.uScale = 10;
+    groundMaterial.diffuseTexture.vScale = 10;
+    groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    ground.position.y = -12;
     ground.material = groundMaterial;
-
-     // Skybox erstellen
-     var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
-     var skyboxMaterial = new BABYLON.StandardMaterial("skyBoxMaterial", scene);
-     skyboxMaterial.backFaceCulling = false;
-     skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/misky", scene);
-     skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-     skybox.material = skyboxMaterial;
-
-    
-     
+    // Skybox erstellen'*/
+    var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
+    var skyboxMaterial = new BABYLON.StandardMaterial("skyBoxMaterial", scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/misky", scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    skybox.material = skyboxMaterial;
     return scene;
 
     }//ende deled scene
