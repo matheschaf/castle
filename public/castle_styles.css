@@ -2,3 +2,29 @@
     font-family:verdana;
     font-size:12px;
 }
+
+/* Container für den toggelbaren Bereich */
+#toggleSectionContainer {
+    width: 50%;
+    margin: 0 auto; /* Zentriert den Container */
+    display: none; /* Standardmäßig ausgeblendet */
+    height: 50vh;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: rgba(128, 128, 128, 0.5); /* Grau und halbtransparent */
+}
+
+/* Optional: Stil des Toggleschalters */
+#toggleButton {
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#toggleButton:hover {
+    background-color: #575757;
+}

@@ -1,0 +1,1 @@
+git add . git commit -m "Aktualisiere CSS für Toggle-Bereich, füge jQuery-Fade-Effekt hinzu" git push origin main

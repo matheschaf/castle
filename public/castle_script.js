@@ -1,16 +1,20 @@
-window.addEventListener("DOMContentLoaded", function() {
+// Event-Listener für DOMContentLoaded
+$(document).ready(function() {
+    // Namensraum castle
+    const castle = {};
+
     // Grundlegende Babylon.js-Einstellungen
-    const canvas = document.getElementById("renderCanvas");
-    const engine = new BABYLON.Engine(canvas, true);
+    castle.canvas = $("#renderCanvas")[0];
+    castle.engine = new BABYLON.Engine(castle.canvas, true);
 
     // Szene erstellen
-    const createScene = function() {
-        const scene = new BABYLON.Scene(engine);
+    castle.createScene = function() {
+        const scene = new BABYLON.Scene(castle.engine);
 
         // Kamera erstellen
         const camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, BABYLON.Vector3.Zero(), scene);
         camera.setPosition(new BABYLON.Vector3(0, 5, -10));
-        camera.attachControl(canvas, true);
+        camera.attachControl(castle.canvas, true);
 
         // Licht erstellen
         const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
@@ -22,15 +26,20 @@ window.addEventListener("DOMContentLoaded", function() {
         return scene;
     };
 
-    const scene = createScene();
+    castle.scene = castle.createScene();
 
     // Render-Schleife
-    engine.runRenderLoop(function() {
-        scene.render();
+    castle.engine.runRenderLoop(function() {
+        castle.scene.render();
     });
 
     // Fenstergröße ändern
-    window.addEventListener("resize", function() {
-        engine.resize();
+    $(window).resize(function() {
+        castle.engine.resize();
+    });
+
+    // Toggle-Funktion mit langsamer Ein- und Ausblendung
+    $("#toggleButton").click(function() {
+        $("#toggleSectionContainer").fadeToggle("slow");
     });
 });
