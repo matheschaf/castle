@@ -6,25 +6,31 @@
 /* Container für den toggelbaren Bereich */
 #toggleSectionContainer {
     width: 50%;
-    margin: 0 auto; /* Zentriert den Container */
+    margin: 40px 10px auto; /* Zentriert den Container */
     display: none; /* Standardmäßig ausgeblendet */
     height: 50vh;
     position: absolute;
     top: 0px;
     right: 0px;
     background-color: rgba(128, 128, 128, 0.5); /* Grau und halbtransparent */
+    z-index:1;
 }
 
 /* Optional: Stil des Toggleschalters */
 #toggleButton {
-    margin: 20px 0;
-    padding: 10px 20px;
-    background-color: #333;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    background-color: #ffffff;
     color: white;
     border: none;
     cursor: pointer;
+    float:right;
+    z-index:2;
+    position: absolute;
+    top:0px;
+    right:0px;
 }
 
 #toggleButton:hover {
-    background-color: #575757;
+    background-color: #ffffff;
 }
