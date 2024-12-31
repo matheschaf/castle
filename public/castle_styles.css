@@ -13,18 +13,24 @@
     top: 0px;
     right: 0px;
     background-color: rgba(128, 128, 128, 0.5); /* Grau und halbtransparent */
+    z-index:1;
 }
 
 /* Optional: Stil des Toggleschalters */
 #toggleButton {
-    margin: 20px 0;
-    padding: 10px 20px;
-    background-color: #333;
+    margin: 0px 0px;
+    padding: 0px 0px;
+    background-color: #ffffff;
     color: white;
     border: none;
     cursor: pointer;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index:2;
+    width:32px;
+}
+#topic{
+    width:32px;
 }
 
-#toggleButton:hover {
-    background-color: #575757;
-}
