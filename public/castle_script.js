@@ -15,20 +15,21 @@ var engine = null;
     var delayCreateScene = function () {
     var scene = new BABYLON.Scene(engine);
     const camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, BABYLON.Vector3.Zero(), scene);
-    camera.setPosition(new BABYLON.Vector3(0, 5, -10));
+    camera.setPosition(new BABYLON.Vector3(60, 0, 10));
     camera.attachControl(canvas, true);
     const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.9;
-    const box = BABYLON.MeshBuilder.CreateBox("box", { size: 2 }, scene);
-
+    const box = BABYLON.MeshBuilder.CreateBox("box", { size: 1 }, scene);
+    box.position.y = -20;
+    var axesViewer = new BABYLON.AxesViewer(scene, 5);
     //create ground
-    var ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "textures/heightMap_orig.png", 500, 500, 500, 0, 20, scene, false);
+    var ground = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "textures/heightMap_orig.png", 1000, 1000, 1000, -10, 30, scene, false);
     var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
     groundMaterial.diffuseTexture = new BABYLON.Texture("textures/ground.jpg", scene);
     groundMaterial.diffuseTexture.uScale = 10;
     groundMaterial.diffuseTexture.vScale = 10;
     groundMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-    ground.position.y = -12;
+    ground.position.y = -20;
     ground.material = groundMaterial;
     // Skybox erstellen'*/
     var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
@@ -65,3 +66,21 @@ var engine = null;
     const toggleButton = document.getElementById("toggleButton");
     const toggleSectionContainer = document.getElementById("toggleSectionContainer");
     $("#toggleButton").click(function() { $("#toggleSectionContainer").fadeToggle("slow"); });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var button1 = document.getElementById('button1');
+        var button2 = document.getElementById('button2');
+        var button3 = document.getElementById('button3');
+    
+        button1.addEventListener('click', function() {
+            debu('Button 1 wurde geklickt!');
+        });
+    
+        button2.addEventListener('click', function() {
+            debu('Button 2 wurde geklickt!');
+        });
+    
+        button3.addEventListener('click', function() {
+            debu('Button 3 wurde geklickt!');
+        });
+    });

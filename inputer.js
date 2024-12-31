@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Babylon.js Boden mit Hügeln</title>
+    <title>Babylon.js mit Achsenpfeilen</title>
     <style>
         canvas {
             width: 100%;
@@ -18,44 +18,19 @@
         var scene = new BABYLON.Scene(engine);
 
         // Kamera und Licht erstellen
-        var camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 50, BABYLON.Vector3.Zero(), scene);
+        var camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 100, BABYLON.Vector3.Zero(), scene);
         camera.attachControl(canvas, true);
         var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
 
-        // Erzeuge eine dynamische Textur für die Heightmap
-        var textureResolution = 512;
-        var dynamicTexture = new BABYLON.DynamicTexture("dynamicTexture", textureResolution, scene, false);
-        var context = dynamicTexture.getContext();
+        // Achsenpfeile anzeigen
+        var axesViewer = new BABYLON.AxesViewer(scene, 10);
 
-        // Zeichne die Heightmap mit Hügeln
-        for (var i = 0; i < textureResolution; i++) {
-            for (var j = 0; j < textureResolution; j++) {
-                var x = i - textureResolution / 2;
-                var y = j - textureResolution / 2;
-                var heightValue = Math.sin(x * 0.1) * Math.sin(y * 0.1) * 128 + 128;  // Beispiel für Hügel
-                if (isNaN(heightValue)) {
-                    heightValue = 128;  // Setze Standardwert, wenn `NaN` gefunden wird
-                }
-                var grayValue = heightValue.toFixed(0);
-                context.fillStyle = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
-                context.fillRect(i, j, 1, 1);
-            }
-        }
-        dynamicTexture.update();
-
-        // Erzeuge das Gelände mit der dynamischen Heightmap
-        var ground = BABYLON.MeshBuilder.CreateGroundFromHeightMap("ground", dynamicTexture, {
-            width: 100,
-            height: 100,
-            subdivisions: 100,
-            minHeight: 0,
-            maxHeight: 10,
-            onReady: function() {
-                var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-                groundMaterial.diffuseTexture = new BABYLON.Texture("path/to/your/grass_texture.png", scene);
-                ground.material = groundMaterial;
-            }
-        }, scene);
+        // Flachen Boden erstellen und nach unten verschieben
+        var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 100, height: 100}, scene);
+        var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
+        groundMaterial.diffuseTexture = new BABYLON.Texture("path/to/your/grass_texture.png", scene);
+        ground.material = groundMaterial;
+        ground.position.y = -5;  // Verschiebe den Boden nach unten
 
         // Hintergrundbild hinzufügen
         var backgroundMaterial = new BABYLON.BackgroundMaterial("backgroundMaterial", scene);
