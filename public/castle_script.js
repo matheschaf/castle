@@ -48,7 +48,6 @@ var engine = null;
 
     function handlePointerEvent(evt) {
         var pickResult = scene.pick(scene.pointerX, scene.pointerY);
-
         if (pickResult.hit) {
             debu("Treffer: " + pickResult.pickedMesh.name);
             // Hier kannst du weitere Aktionen ausführen, wenn der Zeiger auf ein Hindernis trifft

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mauerbau</title>
+    <style>
+        .wall {
+            display: flex;
+            flex-direction: column-reverse; /* Ändert die Reihenfolge der Schichten */
+            gap: 5px;
+        }
+        .row {
+            display: flex;
+            gap: 2px;
+        }
+        .brick {
+            background-color: #8B4513;
+            border: 1px solid #654321;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mauerbau</h1>
+    <button onclick="addBrick()">Füge einen Stein hinzu</button>
+    <div id="wall" class="wall"></div>
+
+    <script>
+        const wallWidth = 12;
+        const wallHeight = 10;
+        const brickSizes = [1, 2, 3, 4, 5, 6];
+        let wall = [];
+        let currentRow = [];
+        let widthRemaining = wallWidth;
+
+        function addBrick() {
+            const brick = getRandomBrick(brickSizes, widthRemaining);
+            if (brick !== null) {
+                currentRow.push(brick);
+                widthRemaining -= brick;
+            } else {
+                if (currentRow.length > 0) {
+                    wall.push(currentRow);
+                }
+                currentRow = [];
+                widthRemaining = wallWidth;
+                addBrick();
+            }
+            updateWallDisplay();
+        }
+
+        function getRandomBrick(brickSizes, maxWidth) {
+            const suitableBricks = brickSizes.filter(size => size <= maxWidth);
+            if (suitableBricks.length === 0) {
+                return null;
+            }
+            const randomIndex = Math.floor(Math.random() * suitableBricks.length);
+            return suitableBricks[randomIndex];
+        }
+
+        function updateWallDisplay() {
+            const wallDiv = document.getElementById('wall');
+            wallDiv.innerHTML = '';
+            wall.forEach((row, layerIndex) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
+                row.forEach(brick => {
+                    const brickDiv = document.createElement('div');
+                    brickDiv.className = 'brick';
+                    brickDiv.style.width = `${brick * 20}px`; // Adjust the width multiplier as needed
+                    rowDiv.appendChild(brickDiv);
+                });
+                wallDiv.appendChild(rowDiv);
+            });
+
+            if (currentRow.length > 0) {
+                const currentRowDiv = document.createElement('div');
+                currentRowDiv.className = 'row';
+                currentRow.forEach(brick => {
+                    const brickDiv = document.createElement('div');
+                    brickDiv.className = 'brick';
+                    brickDiv.style.width = `${brick * 20}px`; // Adjust the width multiplier as needed
+                    currentRowDiv.appendChild(brickDiv);
+                });
+                wallDiv.appendChild(currentRowDiv);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burgbau mit Matheaufgaben</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+</head>
+<body>
+    <h1>Burgbau mit Matheaufgaben</h1>
+    <label for="brickColor">Wähle die Farbe der Steine:</label>
+    <input type="color" id="brickColor" name="brickColor" value="#8B4513">
+    <label for="inputText">Gib deinen Text ein (max. 20 Buchstaben):</label>
+    <input type="text" id="inputText" maxlength="20">
+    <button onclick="startMathChallenge()">Beginne Matheaufgabe</button>
+    <canvas id="renderCanvas" style="width: 100%; height: 800px;"></canvas>
+
+    <script>
+        const canvas = document.getElementById("renderCanvas");
+        const engine = new BABYLON.Engine(canvas, true);
+
+        const createScene = () => {
+            const scene = new BABYLON.Scene(engine);
+
+            const camera = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 4, 20, BABYLON.Vector3.Zero(), scene);
+            camera.attachControl(canvas, true);
+
+            const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+            light.intensity = 1.0;
+
+            // Feste Grundrisselemente hinzufügen (Mauern, Türme)
+            const wall = BABYLON.MeshBuilder.CreateBox("wall", {width: 10, height: 5, depth: 1}, scene);
+            wall.position = new BABYLON.Vector3(0, 2.5, -5);
+
+            const tower = BABYLON.MeshBuilder.CreateCylinder("tower", {diameter: 3, height: 10}, scene);
+            tower.position = new BABYLON.Vector3(-6, 5, -6);
+
+            return scene;
+        };
+
+        const scene = createScene();
+        engine.runRenderLoop(() => scene.render());
+
+        // Positionen für die Burgmauer und Türme festlegen, jetzt mit Dezimalwerten
+        const positions = [
+            {x: -5.0, y: 1.0, z: -5.0},
+            {x: -4.5, y: 1.0, z: -5.0},
+            {x: -4.0, y: 1.0, z: -5.0},
+            {x: -3.5, y: 1.0, z: -5.0},
+            {x: -3.0, y: 1.0, z: -5.0},
+            {x: -2.5, y: 1.0, z: -5.0},
+            {x: -2.0, y: 1.0, z: -5.0},
+            {x: -1.5, y: 1.0, z: -5.0},
+            {x: -1.0, y: 1.0, z: -5.0},
+            {x: -0.5, y: 1.0, z: -5.0},
+            {x: 0.0, y: 1.0, z: -5.0},
+            {x: 0.5, y: 1.0, z: -5.0},
+            {x: 1.0, y: 1.0, z: -5.0},
+            {x: 1.5, y: 1.0, z: -5.0},
+            {x: 2.0, y: 1.0, z: -5.0},
+            {x: 2.5, y: 1.0, z: -5.0},
+            {x: 3.0, y: 1.0, z: -5.0},
+            {x: 3.5, y: 1.0, z: -5.0},
+            {x: 4.0, y: 1.0, z: -5.0},
+            {x: 4.5, y: 1.0, z: -5.0},
+            {x: 5.0, y: 1.0, z: -5.0},
+            // Weitere Positionen mit Dezimalwerten hinzufügen
+        ];
+
+        let currentIndex = 0;
+
+        function startMathChallenge() {
+            if (currentIndex < positions.length) {
+                const num1 = Math.floor(Math.random() * 10) + 1;
+                const num2 = Math.floor(Math.random() * 10) + 1;
+                const userAnswer = prompt(`Was ist ${num1} + ${num2}?`);
+                if (parseInt(userAnswer) === num1 + num2) {
+                    addBrick(positions[currentIndex].x, positions[currentIndex].y, positions[currentIndex].z);
+                    currentIndex++;
+                } else {
+                    alert("Falsche Antwort. Versuche es erneut!");
+                }
+            } else {
+                alert("Alle Positionen sind bereits belegt!");
+            }
+        }
+
+        function addBrick(x, y, z) {
+            const brickMesh = BABYLON.MeshBuilder.CreateBox("brick", {width: 1, height: 1, depth: 1}, scene);
+            brickMesh.position = new BABYLON.Vector3(x, y, z);
+
+            const brickColor = document.getElementById("brickColor").value;
+            const brickMaterial = new BABYLON.StandardMaterial("brickMat", scene);
+            brickMaterial.diffuseColor = BABYLON.Color3.FromHexString(brickColor);
+            brickMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+            brickMesh.material = brickMaterial;
+
+            addTextToBrick(brickMesh);
+        }
+
+        function addTextToBrick(brickMesh) {
+            const inputText = document.getElementById("inputText").value;
+            const dynamicTexture = new BABYLON.DynamicTexture(`dynamicTexture-${brickMesh.name}`, {width: 512, height: 256}, scene, false);
+            dynamicTexture.hasAlpha = true;
+            dynamicTexture.drawText(inputText, null, 140, "bold 120px Arial", "white", "transparent");
+
+            const textMaterial = new BABYLON.StandardMaterial(`textMat-${brickMesh.name}`, scene);
+            textMaterial.diffuseTexture = dynamicTexture;
+            textMaterial.diffuseTexture.hasAlpha = true;
+            textMaterial.backFaceCulling = false;
+
+            const textPlane = BABYLON.MeshBuilder.CreatePlane(`textPlane-${brickMesh.name}`, {width: brickMesh.scaling.x, height: 1}, scene);
+            textPlane.material = textMaterial;
+            textPlane.position = brickMesh.position.clone();
+            textPlane.position.z += 0.51;
+
+            textPlane.rotation = new BABYLON.Vector3(0, 0, 0);
+            textPlane.rotationQuaternion = null;
+
+            textPlane.scaling.x = -1;
+        }
+
+        window.addEventListener("resize", () => engine.resize());
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+Konzeption
+
+1. Pädagogische Zielstellung
+Das Spiel soll Schülern der Klassen 6 - 12 Mathekenntnisse vermitteln, Mathe üben und festigen.
+Dazu wird ein Gebäude (Schloß, Castle) aus verschiedenen Bausteinen 
+errichtet. Jeder kann sehen, was der andere gemacht hat (macht) und so in Wettstreit treten.
+Es gibt Wettbewerbe, Preise, Challenges. Das Haupziel ist aber die optische Verortung von Kenntnissen.
+Jeder Spieler kann sich selbst einen Nicknamen geben, also auch anonym bleiben. Ideen zur Vergrößerung des 
+Spaßfaktors werden noch gesucht.
+
+2. Architektonische Zielstellung
+Es soll eine Burg nach einem grob vorgefertigten Plan entstehen, der von den Spielern mit Leben erfüllt wird.
+Dazu sind Bausteine aufeinander zu schichten, jeder Stein repräsentiert eine gelöste Matheaufgabe. Das Auswählen 
+eines Steines stellt die Aufgabe und Lösung einer Matheaufgabe in einem extra Panel dar. Fragen können an eine
+copilot api gestellt werden, aber nur mit vorgegebener Struktur. Jedem Spieler ist ein individuelles, wiedererkennbares
+Steinmuster (Farbe, Struktur) zugeordnet.
+
+3. Umsetzung, Programmierung
+Das Programm soll als Multiplayerspiel ausgelegt werden, aber nur für persönlich bekannte Spieler offen sein, also keine 
+Sicherheitsprobleme. Als 3D Engine soll Babylon.js verwendet werden. Auf einer Grundstruktur aufgesetzt ist vor allem
+das Problem der Schichtung der Steine aus Programmierersicht zu lösen. Die Stapelung soll zufällig sein, 
+es muss nichts fertig werden, aber es sollen keine Lücken entstehen.
+Die Matheaufgaben werden sowohl von einer Software generiert, wie auch von copilot oder ChatGPT zur Verfügung gestellt, inklusive Lösungen.
+Die Kommunikation zwischen Spielern (wenn gewünscht) und dem Admin soll über Websockets erfolgen.  Der Spielstand soll auf einem
+externen Server gespeichert werden, inklusive der Aufgaben und einer Level - Zuordnung. Es soll Node.js und eventuell PHP (zur Speicherung) verwendet werden. 
+Diverse UI - Elemente werden eingebaut. Auch die Entwicklung des Spiels soll schrittweise erfolgen. Verschieden Feautures sollen 
+nacheinander ergänzt werden. 

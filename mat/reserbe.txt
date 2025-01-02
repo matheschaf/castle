@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mauerbau mit Babylon.js</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+</head>
+<body>
+    <h1>Mauerbau mit Babylon.js</h1>
+    <label for="brickColor">Wähle die Farbe der Steine:</label>
+    <input type="color" id="brickColor" name="brickColor" value="#8B4513">
+    <button onclick="addBrick()">Füge einen Stein hinzu</button>
+    <canvas id="renderCanvas" style="width: 100%; height: 800px;"></canvas>
+
+    <script>
+        const canvas = document.getElementById("renderCanvas");
+        const engine = new BABYLON.Engine(canvas, true);
+
+        const createScene = () => {
+            const scene = new BABYLON.Scene(engine);
+
+            const camera = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 4, 20, BABYLON.Vector3.Zero(), scene);
+            camera.attachControl(canvas, true);
+
+            const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
+            light.intensity = 0.7;
+
+            return scene;
+        };
+
+        const scene = createScene();
+
+        const wallWidth = 12;
+        const wallHeight = 10;
+        const brickSizes = [1, 2, 3, 4, 5, 6];
+        let wall = [];
+        let currentRow = [];
+        let widthRemaining = wallWidth;
+        let yOffset = 0;
+        const gapSize = 0.1;
+
+        function addBrick() {
+            const brick = getRandomBrick(brickSizes, widthRemaining);
+            if (brick !== null) {
+                const brickMesh = BABYLON.MeshBuilder.CreateBox(`brick-${wall.length}-${currentRow.length}`, 
+                {width: brick - gapSize, height: 1 - gapSize, depth: 1 - gapSize}, scene);
+                brickMesh.position.x = (wallWidth / 2) - (widthRemaining - (brick / 2));
+                brickMesh.position.y = yOffset;
+                brickMesh.position.z = 0;
+
+                // Farbe der Steine basierend auf der Auswahl
+                const brickColor = document.getElementById("brickColor").value;
+                const brickMaterial = new BABYLON.StandardMaterial("brickMat", scene);
+                brickMaterial.diffuseColor = BABYLON.Color3.FromHexString(brickColor);
+
+                // Textur nur einmal zufällig festlegen
+                const texture = new BABYLON.Texture("steinmuster.png", scene);
+                const textureScale = 4; // Skalierungsfaktor für Textur
+                brickMaterial.diffuseTexture = texture;
+                brickMaterial.diffuseTexture.uScale = textureScale;
+                brickMaterial.diffuseTexture.vScale = textureScale;
+                const uOffset = Math.random();
+                const vOffset = Math.random();
+                brickMaterial.diffuseTexture.uOffset = uOffset;
+                brickMaterial.diffuseTexture.vOffset = vOffset;
+
+                // Hinzufügen des Schriftzuges
+                const dynamicTexture = new BABYLON.DynamicTexture("dynamicTexture", {width: 512, height: 256}, scene, false);
+                const context = dynamicTexture.getContext();
+                context.font = "bold 48px Arial";
+                context.fillStyle = "white";
+                const text = generateRandomText(brick * 3);
+                dynamicTexture.drawText(text, null, 128, "bold 48px Arial", "white", null, true);
+
+                brickMaterial.diffuseTexture = dynamicTexture;
+
+                brickMesh.material = brickMaterial;
+                
+                currentRow.push(brickMesh);
+                widthRemaining -= brick;
+            } else {
+                if (currentRow.length > 0) {
+                    wall.push(currentRow);
+                    yOffset += 1;
+                }
+                currentRow = [];
+                widthRemaining = wallWidth;
+                addBrick();
+            }
+        }
+
+        function getRandomBrick(brickSizes, maxWidth) {
+            const suitableBricks = brickSizes.filter(size => size <= maxWidth);
+            if (suitableBricks.length === 0) {
+                return null;
+            }
+            const randomIndex = Math.floor(Math.random() * suitableBricks.length);
+            return suitableBricks[randomIndex];
+        }
+
+        function generateRandomText(length) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            let text = "";
+            for (let i = 0; i < length; i++) {
+                text += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return text;
+        }
+
+
+        engine.runRenderLoop(() => {
+            scene.render();
+        });
+
+        window.addEventListener("resize", () => {
+            engine.resize();
+        });
+
+        // Create white gaps
+        function createWhiteGap(x, y, width, height) {
+            const gapMesh = BABYLON.MeshBuilder.CreateBox(`gap-${x}-${y}`, 
+            {width: width, height: height, depth: 1}, scene);
+            gapMesh.position.x = x;
+            gapMesh.position.y = y;
+            gapMesh.position.z = 0;
+            gapMesh.material = new BABYLON.StandardMaterial("gapMat", scene);
+            gapMesh.material.diffuseColor = new BABYLON.Color3(1, 1, 1); // Weiß
+        }
+
+        // Call createWhiteGap where appropriate
+    </script>
+</body>
+</html>
