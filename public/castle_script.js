@@ -12,6 +12,7 @@ var engine = null;
     var scene = null;
     var sceneToRender = null;
     var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+    
     var delayCreateScene = function () {
     var scene = new BABYLON.Scene(engine);
     const camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, BABYLON.Vector3.Zero(), scene);
@@ -49,11 +50,110 @@ var engine = null;
     function handlePointerEvent(evt) {
         var pickResult = scene.pick(scene.pointerX, scene.pointerY);
         if (pickResult.hit) {
-            debu("Treffer: " + pickResult.pickedMesh.name);
+            //debu("Treffer: " + pickResult.pickedMesh.name);
             // Hier kannst du weitere Aktionen ausführen, wenn der Zeiger auf ein Hindernis trifft
         }
     }
+    //------------------------------
+    const wallWidth = 12;
+        const wallHeight = 10;
+        const brickSizes = [1, 2, 3, 4, 5, 6];
+        let wall = [];
+        let currentRow = [];
+        let widthRemaining = wallWidth;
+        let yOffset = -20;
+        const gapSize = 0.1;
 
+        function addBrick() {
+            const brick = getRandomBrick(brickSizes, widthRemaining);
+            if (brick !== null) {
+                const brickMesh = BABYLON.MeshBuilder.CreateBox(`brick-${wall.length}-${currentRow.length}`, 
+                {width: brick - gapSize, height: 1 - gapSize, depth: 1 - gapSize}, scene);
+                brickMesh.position.x = (wallWidth / 2) - (widthRemaining - (brick / 2));
+                brickMesh.position.y = yOffset;
+                brickMesh.position.z = 0;
+
+                // Farbe der Steine basierend auf der Auswahl
+                const brickColor = "#885678";
+                const brickMaterial = new BABYLON.StandardMaterial("brickMat", scene);
+                brickMaterial.diffuseColor = BABYLON.Color3.FromHexString(brickColor);
+
+                // Ursprüngliche Textur den gesamten Stein ausfüllen lassen
+                const texture = new BABYLON.Texture("textures/steinmuster.png", scene);
+                brickMaterial.diffuseTexture = texture;
+                brickMaterial.diffuseTexture.uScale = 1;
+                brickMaterial.diffuseTexture.vScale = 1;
+
+                // Spiegelung reduzieren
+                brickMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+
+                brickMesh.material = brickMaterial;
+                addTextToBrick(brickMesh);
+
+                currentRow.push(brickMesh);
+                widthRemaining -= brick;
+            } else {
+                if (currentRow.length > 0) {
+                    wall.push(currentRow);
+                    yOffset += 1;
+                }
+                currentRow = [];
+                widthRemaining = wallWidth;
+                addBrick();
+            }
+        }
+
+        function getRandomBrick(brickSizes, maxWidth) {
+            const suitableBricks = brickSizes.filter(size => size <= maxWidth);
+            if (suitableBricks.length === 0) {
+                return null;
+            }
+            const randomIndex = Math.floor(Math.random() * suitableBricks.length);
+            return suitableBricks[randomIndex];
+        }
+
+        function addTextToBrick(brickMesh) {
+            const inputText = "Huhu"
+            // Dynamische Textur erstellen und Text darauf zeichnen
+            const dynamicTexture = new BABYLON.DynamicTexture(`dynamicTexture-${brickMesh.name}`, {width:512, height:256}, scene, false);
+            dynamicTexture.hasAlpha = true; // Transparenz aktivieren
+            dynamicTexture.drawText(inputText, null, 140, "bold 60px Arial", "white", "transparent");
+
+            const textMaterial = new BABYLON.StandardMaterial(`textMat-${brickMesh.name}`, scene);
+            textMaterial.diffuseTexture = dynamicTexture;
+            textMaterial.diffuseTexture.hasAlpha = true; // Transparenz aktivieren
+            textMaterial.backFaceCulling = false; // Rückseiten culling deaktivieren
+
+            const textPlane = BABYLON.MeshBuilder.CreatePlane(`textPlane-${brickMesh.name}`, {width: brickMesh.scaling.x, height: 1}, scene);
+            textPlane.material = textMaterial;
+            textPlane.position = brickMesh.position.clone();
+            textPlane.position.z += 0.51; // Position der Vorderseite des Steins
+
+            // Text-Plane rotieren, um sie parallel zur Vorderseite des Steins zu machen
+            textPlane.rotation = new BABYLON.Vector3(0, 0, 0); 
+            textPlane.rotationQuaternion = null; // Quaternion deaktivieren
+
+            // Text-Plane horizontal spiegeln
+            textPlane.scaling.x = -1;
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var button1 = document.getElementById('button1');
+            var button2 = document.getElementById('button2');
+            var button3 = document.getElementById('button3');
+        
+            button1.addEventListener('click', function() {
+                debu('B1');
+                addBrick();
+            });
+        
+            button2.addEventListener('click', function() {
+                debu('Button 2 wurde geklickt!');
+            });
+        
+            button3.addEventListener('click', function() {
+                debu('Button 3 wurde geklickt!');
+            });
+        });
 
 
     return scene;
@@ -83,20 +183,4 @@ var engine = null;
     const toggleSectionContainer = document.getElementById("toggleSectionContainer");
     $("#toggleButton").click(function() { $("#toggleSectionContainer").fadeToggle("slow"); });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        var button1 = document.getElementById('button1');
-        var button2 = document.getElementById('button2');
-        var button3 = document.getElementById('button3');
-    
-        button1.addEventListener('click', function() {
-            debu('Button 1 wurde geklickt!');
-        });
-    
-        button2.addEventListener('click', function() {
-            debu('Button 2 wurde geklickt!');
-        });
-    
-        button3.addEventListener('click', function() {
-            debu('Button 3 wurde geklickt!');
-        });
-    });
+   
